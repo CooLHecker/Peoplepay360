@@ -1,6 +1,7 @@
-import { Bell, BriefcaseBusiness, CalendarDays, ChevronDown, CircleHelp, LayoutDashboard, Menu, Users, WalletCards, X } from "lucide-react";
-import { NavLink, Outlet, useLocation } from "react-router-dom";
+import { Bell, BriefcaseBusiness, CalendarDays, ChevronDown, CircleHelp, LayoutDashboard, LogOut, Menu, UserRound, Users, WalletCards, X } from "lucide-react";
+import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { useAuth } from "@/lib/auth";
 
 const NAV_ITEMS = [
   { to: "/", label: "Dashboard", icon: LayoutDashboard },
@@ -12,7 +13,11 @@ const NAV_ITEMS = [
 
 export default function AppLayout() {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [accountOpen, setAccountOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
+  const { signOut } = useAuth();
+  const switchAccount = (path: string) => { setAccountOpen(false); void signOut().then(() => navigate(path)); };
 
   return (
     <div className="min-h-screen">
@@ -33,7 +38,7 @@ export default function AppLayout() {
         </nav>
         <div className="mt-auto border-t border-[#eee9ed] pt-5">
           <button className="flex w-full items-center gap-3 rounded-lg px-3 py-3 text-left text-sm font-semibold text-[#756c75] hover:bg-[#fbf8fa]"><CircleHelp size={18} />Help center</button>
-          <div className="mt-4 flex items-center gap-3 rounded-xl bg-[#fbf8fa] p-3"><div className="grid h-9 w-9 place-items-center rounded-full bg-[#d8c4d3] text-sm font-bold text-[#5c3a54]">AM</div><div className="min-w-0"><p className="truncate text-sm font-bold text-[#352f37]">Alex Morgan</p><p className="text-xs text-[#9c8e99]">HR administrator</p></div><ChevronDown size={15} className="ml-auto text-[#9c8e99]" /></div>
+          <div className="relative mt-4"><button onClick={() => setAccountOpen((open) => !open)} aria-expanded={accountOpen} className="flex w-full items-center gap-3 rounded-xl bg-[#fbf8fa] p-3 text-left hover:bg-[#f3edf2]"><div className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[#d8c4d3] text-sm font-bold text-[#5c3a54]">AM</div><div className="min-w-0"><p className="truncate text-sm font-bold text-[#352f37]">Alex Morgan</p><p className="text-xs text-[#9c8e99]">HR administrator</p></div><ChevronDown size={15} className={`ml-auto text-[#9c8e99] transition ${accountOpen ? "rotate-180" : ""}`} /></button>{accountOpen && <div className="absolute bottom-full left-0 right-0 mb-2 overflow-hidden rounded-xl border border-[#e6e0e5] bg-white p-1 shadow-xl"><button onClick={() => { setAccountOpen(false); navigate("/employees"); }} className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold text-[#756c75] hover:bg-[#fbf8fa]"><UserRound size={16} /> Account profile</button><button onClick={() => switchAccount("/employee-login")} className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold text-[#756c75] hover:bg-[#fbf8fa]"><Users size={16} /> Switch to employee account</button><button onClick={() => switchAccount("/login")} className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold text-[#b64e5b] hover:bg-[#fff0f1]"><LogOut size={16} /> Sign out</button></div>}</div>
         </div>
       </aside>
       {mobileOpen && <button className="fixed inset-0 z-20 bg-[#25212a]/30 lg:hidden" onClick={() => setMobileOpen(false)} aria-label="Close navigation" />}
