@@ -2,7 +2,7 @@ import { ArrowUpRight, CalendarCheck2, Clock3, Users } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Metric, Status, money } from "@/components/ui/PageBits";
 
-const tasks = [{ title: "Review time-off requests", count: "4 pending", to: "/time-off" }, { title: "Run September payroll", count: "Due in 5 days", to: "/payroll" }, { title: "Complete employee records", count: "3 missing details", to: "/employees" }];
+const tasks = [{ title: "Review time-off requests", count: "4 pending", to: "/time-off" }, { title: "Run September payroll", count: "Due in 5 days", to: "/payroll" }, { title: "Complete employee records", count: "3 missing details", to: "/employees" }, { title: "Manage working schedules", count: "2 schedules defined", to: "/working-schedules" }];
 
 export default function DashboardPage() {
   return (

@@ -16,16 +16,27 @@ async function request<T>(path: string, options: RequestOptions = {}): Promise<T
   });
 
   if (!res.ok) {
-    // FastAPI error responses are {"detail": "..."} — surface that
-    // message when present instead of a bare status code.
+    // FastAPI error responses are usually {"detail": "..."}, but 422
+    // validation errors return {"detail": [{loc, msg, type}, ...]}
+    // instead — handle both shapes so the real reason surfaces.
     let detail: string | undefined;
     try {
       const body = await res.clone().json();
-      if (body && typeof body.detail === "string") detail = body.detail;
+      if (body && typeof body.detail === "string") {
+        detail = body.detail;
+      } else if (body && Array.isArray(body.detail)) {
+        detail = body.detail
+          .map((item: { loc?: unknown[]; msg?: string }) => {
+            const field = Array.isArray(item.loc) ? item.loc.filter((part) => part !== "body").join(".") : undefined;
+            return field ? `${field}: ${item.msg ?? "invalid value"}` : item.msg;
+          })
+          .filter(Boolean)
+          .join("; ");
+      }
     } catch {
       /* not JSON, fall back to status text below */
     }
-    throw new Error(detail ?? `Request failed: ${res.status} ${res.statusText}`);
+    throw new Error(detail || `Request failed: ${res.status} ${res.statusText}`);
   }
 
   if (res.status === 204) return undefined as T;

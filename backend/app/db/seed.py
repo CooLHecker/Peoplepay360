@@ -12,7 +12,7 @@ Run with:
 from app.core.config import get_settings
 from app.core.security import hash_password
 from app.db.session import SessionLocal
-from app.models import Employee, EmploymentStatus, Role, RoleName, User
+from app.models import Employee, EmploymentStatus, Role, RoleName, TimeOffType, TimeOffWorkEntryBehavior, User
 
 settings = get_settings()
 
@@ -89,12 +89,29 @@ def seed_demo_employee(db, roles: dict[str, Role]) -> None:
     print(f"Demo employee created: {email}")
 
 
+DEFAULT_TIME_OFF_TYPES = [
+    {"name": "Annual Leave", "description": "Paid yearly leave allocation.", "requires_allocation": True, "work_entry_behavior": TimeOffWorkEntryBehavior.paid},
+    {"name": "Sick Leave", "description": "Paid leave for illness.", "requires_allocation": True, "work_entry_behavior": TimeOffWorkEntryBehavior.paid},
+    {"name": "Unpaid Leave", "description": "Leave without pay, no allocation required.", "requires_allocation": False, "work_entry_behavior": TimeOffWorkEntryBehavior.unpaid},
+]
+
+
+def seed_time_off_types(db) -> None:
+    for spec in DEFAULT_TIME_OFF_TYPES:
+        existing = db.query(TimeOffType).filter(TimeOffType.name == spec["name"]).first()
+        if existing is None:
+            db.add(TimeOffType(**spec))
+            print(f"Created time off type: {spec['name']}")
+    db.commit()
+
+
 def main() -> None:
     db = SessionLocal()
     try:
         roles = seed_roles(db)
         seed_bootstrap_admin(db, roles)
         seed_demo_employee(db, roles)
+        seed_time_off_types(db)
     finally:
         db.close()
 

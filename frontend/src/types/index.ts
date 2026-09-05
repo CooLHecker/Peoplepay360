@@ -21,6 +21,19 @@ export interface Contract {
   status: "draft" | "running" | "expired" | "cancelled";
 }
 
+export interface WorkingSchedule {
+  id: string;
+  name: string;
+  description: string | null;
+  isFlexible: boolean;
+  hoursPerWeek: number;
+  daysPerWeek: number;
+  startTime: string | null;
+  endTime: string | null;
+  timezone: string;
+  isActive: boolean;
+}
+
 export interface AttendanceRecord {
   id: string;
   employeeId: string;
@@ -29,13 +42,45 @@ export interface AttendanceRecord {
   status: "pending" | "confirmed" | "anomaly";
 }
 
+export type TimeOffStatus = "draft" | "submitted" | "approved" | "refused";
+
+export interface TimeOffType {
+  id: string;
+  name: string;
+  description: string | null;
+  requiresAllocation: boolean;
+  workEntryBehavior: "paid" | "unpaid";
+  isActive: boolean;
+}
+
 export interface TimeOffRequest {
   id: string;
+  employeeId: string;
   employeeName: string;
-  type: string;
-  dates: string;
-  days: number;
-  status: "Pending" | "Approved" | "Rejected";
+  timeOffTypeId: string;
+  timeOffTypeName: string;
+  startDate: string;
+  endDate: string;
+  numberOfDays: number;
+  reason: string | null;
+  availableBalance: number | null;
+  status: TimeOffStatus;
+}
+
+export interface TimeOffBalance {
+  employeeId: string;
+  employeeName: string;
+  timeOffTypeId: string;
+  timeOffTypeName: string;
+  allocated: number;
+  used: number;
+  remaining: number;
+}
+
+export interface TimeOffSummary {
+  pending: number;
+  approved_this_month: number;
+  days_out_this_week: number;
 }
 
 export interface PayrollRun {

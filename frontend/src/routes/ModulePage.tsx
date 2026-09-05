@@ -4,7 +4,6 @@ import { PageHeading, Status, Toolbar } from "@/components/ui/PageBits";
 
 const content: Record<string, { title: string; eyebrow: string; description: string; rows: string[] }> = {
   contracts: { title: "Contracts", eyebrow: "Employees / contracts", description: "Manage employee agreements, dates, wages, and running status.", rows: ["Sarah Jenkins · Product Designer · Running", "Marcus Chen · Senior Engineer · Running", "Priya Shah · People Partner · Running"] },
-  schedules: { title: "Working schedules", eyebrow: "Employees / schedules", description: "Define the working patterns used by your teams.", rows: ["Standard 40 hours · 5 days/week · Asia/Kolkata", "Flexible product schedule · 5 days/week · Asia/Kolkata"] },
   requests: { title: "Time-off requests", eyebrow: "Time off / requests", description: "Review submitted leave requests and approvals.", rows: ["Sarah Jenkins · Annual leave · Pending", "Marcus Chen · Personal day · Pending", "Priya Shah · Annual leave · Approved"] },
   allocations: { title: "Time-off allocations", eyebrow: "Time off / allocations", description: "Track allocated, used, and remaining leave balances.", rows: ["Sarah Jenkins · Annual leave · 14 days remaining", "Marcus Chen · Annual leave · 10 days remaining"] },
   types: { title: "Time-off types", eyebrow: "Time off / configuration", description: "Configure the leave types available to employees.", rows: ["Annual leave · Allocation required · Active", "Sick leave · Allocation not required · Active"] },
