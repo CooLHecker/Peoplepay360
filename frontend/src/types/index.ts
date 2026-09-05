@@ -1,9 +1,11 @@
 export interface Employee {
   id: string;
   fullName: string;
+  workEmail?: string | null;
   departmentId: string | null;
   positionId: string | null;
   employmentStatus: "active" | "inactive" | "terminated";
+  hasLoginAccess?: boolean;
 }
 
 export interface Contract {
