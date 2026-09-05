@@ -1,3 +1,4 @@
 # root-level ignores; frontend/ and backend/ have their own too
 .DS_Store
 *.log
+node_modules/
