@@ -1,6 +1,7 @@
-import { Bell, BriefcaseBusiness, CalendarDays, ChevronDown, CircleHelp, LayoutDashboard, Menu, Users, WalletCards, X } from "lucide-react";
-import { NavLink, Outlet, useLocation } from "react-router-dom";
+import { Bell, BriefcaseBusiness, CalendarDays, ChevronDown, CircleHelp, LayoutDashboard, LogOut, Menu, Users, WalletCards, X } from "lucide-react";
+import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { useAuth } from "@/lib/auth";
 
 const NAV_ITEMS = [
   { to: "/", label: "Dashboard", icon: LayoutDashboard },
@@ -12,7 +13,15 @@ const NAV_ITEMS = [
 
 export default function AppLayout() {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
+  const { signOut } = useAuth();
+
+  const handleLogout = () => {
+    setProfileOpen(false);
+    void signOut().then(() => navigate("/login"));
+  };
 
   return (
     <div className="min-h-screen">
@@ -33,10 +42,40 @@ export default function AppLayout() {
         </nav>
         <div className="mt-auto border-t border-[#eee9ed] pt-5">
           <button className="flex w-full items-center gap-3 rounded-lg px-3 py-3 text-left text-sm font-semibold text-[#756c75] hover:bg-[#fbf8fa]"><CircleHelp size={18} />Help center</button>
-          <div className="mt-4 flex items-center gap-3 rounded-xl bg-[#fbf8fa] p-3"><div className="grid h-9 w-9 place-items-center rounded-full bg-[#d8c4d3] text-sm font-bold text-[#5c3a54]">AM</div><div className="min-w-0"><p className="truncate text-sm font-bold text-[#352f37]">Alex Morgan</p><p className="text-xs text-[#9c8e99]">HR administrator</p></div><ChevronDown size={15} className="ml-auto text-[#9c8e99]" /></div>
+          <div className="relative mt-4">
+            <button
+              type="button"
+              onClick={() => setProfileOpen((value) => !value)}
+              aria-haspopup="menu"
+              aria-expanded={profileOpen}
+              className="flex w-full items-center gap-3 rounded-xl bg-[#fbf8fa] p-3 text-left hover:bg-[#f3edf2]"
+            >
+              <div className="grid h-9 w-9 place-items-center rounded-full bg-[#d8c4d3] text-sm font-bold text-[#5c3a54]">AM</div>
+              <div className="min-w-0"><p className="truncate text-sm font-bold text-[#352f37]">Alex Morgan</p><p className="text-xs text-[#9c8e99]">HR administrator</p></div>
+              <ChevronDown size={15} className={`ml-auto text-[#9c8e99] transition-transform ${profileOpen ? "rotate-180" : ""}`} />
+            </button>
+            {profileOpen && (
+              <div role="menu" className="absolute bottom-full left-0 z-40 mb-2 w-full overflow-hidden rounded-lg border border-[#e6e0e5] bg-white shadow-[0_10px_30px_rgba(113,75,103,0.12)]">
+                <button
+                  type="button"
+                  role="menuitem"
+                  onClick={handleLogout}
+                  className="flex w-full items-center gap-2 px-4 py-3 text-left text-sm font-bold text-[#756c75] hover:bg-[#fbf8fa] hover:text-[#714b67]"
+                >
+                  <LogOut size={16} /> Log out
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       </aside>
-      {mobileOpen && <button className="fixed inset-0 z-20 bg-[#25212a]/30 lg:hidden" onClick={() => setMobileOpen(false)} aria-label="Close navigation" />}
+      {(mobileOpen || profileOpen) && (
+        <button
+          className="fixed inset-0 z-20 bg-[#25212a]/30 lg:bg-transparent"
+          onClick={() => { setMobileOpen(false); setProfileOpen(false); }}
+          aria-label="Close menu"
+        />
+      )}
       <div className="lg:pl-64">
         <header className="sticky top-0 z-10 flex h-[72px] items-center justify-between border-b border-[#e6e0e5] bg-white/85 px-5 backdrop-blur-xl sm:px-8">
           <div className="flex items-center gap-3"><button className="rounded-lg p-2 text-[#756c75] hover:bg-[#f3edf2] lg:hidden" onClick={() => setMobileOpen(true)} aria-label="Open menu"><Menu size={20} /></button><span className="hidden text-sm font-semibold text-[#9c8e99] sm:block">People operations /</span><span className="text-sm font-bold text-[#5c3a54]">{location.pathname === "/" ? "Overview" : NAV_ITEMS.find((item) => item.to === location.pathname)?.label ?? "Workspace"}</span></div>

@@ -10,6 +10,8 @@ import NotFoundPage from "@/routes/NotFoundPage";
 import EmployeeDetailsPage from "@/routes/EmployeeDetailsPage";
 import EmployeeFormPage from "@/routes/EmployeeFormPage";
 import EmployeeDashboardPage from "@/routes/EmployeeDashboardPage";
+import ContractsPage from "@/routes/ContractsPage";
+import ContractFormPage from "@/routes/ContractFormPage";
 import { isAdmin, useAuth } from "@/lib/auth";
 import type { ReactElement } from "react";
 import ModulePage from "@/routes/ModulePage";
@@ -38,7 +40,9 @@ export default function App() {
         <Route path="/attendance" element={<AttendancePage />} />
         <Route path="/time-off" element={<TimeOffPage />} />
         <Route path="/payroll" element={<PayrollPage />} />
-        <Route path="/contracts" element={<RequireSession admin><ModulePage module="contracts" /></RequireSession>} />
+        <Route path="/contracts" element={<RequireSession admin><ContractsPage /></RequireSession>} />
+        <Route path="/contracts/new" element={<RequireSession admin><ContractFormPage /></RequireSession>} />
+        <Route path="/contracts/:contractId/edit" element={<RequireSession admin><ContractFormPage /></RequireSession>} />
         <Route path="/working-schedules" element={<RequireSession admin><ModulePage module="schedules" /></RequireSession>} />
         <Route path="/time-off/requests" element={<ModulePage module="requests" />} />
         <Route path="/time-off/allocations" element={<ModulePage module="allocations" />} />

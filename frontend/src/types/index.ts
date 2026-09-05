@@ -11,10 +11,14 @@ export interface Employee {
 export interface Contract {
   id: string;
   employeeId: string;
+  employeeName: string;
+  department: string | null;
+  jobPosition: string | null;
+  salaryStructureId: string | null;
+  wage: number;
   startDate: string;
   endDate: string | null;
-  wage: number;
-  salaryStructureId: string;
+  status: "draft" | "running" | "expired" | "cancelled";
 }
 
 export interface AttendanceRecord {

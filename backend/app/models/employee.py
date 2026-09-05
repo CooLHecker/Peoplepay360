@@ -40,3 +40,6 @@ class Employee(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
     user: Mapped["User | None"] = relationship(back_populates="employee", uselist=False)
+    contracts: Mapped[list["Contract"]] = relationship(
+        back_populates="employee", cascade="all, delete-orphan"
+    )
