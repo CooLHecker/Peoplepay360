@@ -9,7 +9,7 @@ export interface SyncQueueItem {
   status: "PENDING" | "SYNCING" | "SYNCED" | "FAILED";
 }
 
-export class PeoplePayDB extends Dexie {
+export class InterloopDB extends Dexie {
   employees!: Table<any, string>;
   contracts!: Table<any, string>;
   attendance!: Table<any, string>;
@@ -21,7 +21,7 @@ export class PeoplePayDB extends Dexie {
   syncQueue!: Table<SyncQueueItem, string>;
 
   constructor() {
-    super("peoplepay-offline");
+    super("interloop-offline");
     this.version(1).stores({
       employees: "id",
       contracts: "id, employeeId",
@@ -36,4 +36,4 @@ export class PeoplePayDB extends Dexie {
   }
 }
 
-export const db = new PeoplePayDB();
+export const db = new InterloopDB();

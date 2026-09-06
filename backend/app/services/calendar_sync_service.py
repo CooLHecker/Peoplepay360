@@ -24,7 +24,7 @@ Either way, add the client credentials to `.env` / `Settings`
 
 import logging
 
-logger = logging.getLogger("peoplepay.calendar_sync")
+logger = logging.getLogger("interloop.calendar_sync")
 logger.setLevel(logging.INFO)
 if not logger.handlers:
     # uvicorn's own logging setup (logging.config.dictConfig, run after

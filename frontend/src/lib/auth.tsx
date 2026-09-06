@@ -7,11 +7,11 @@ interface AuthContextValue { session: Session | null; loading: boolean; signOut:
 const AuthContext = createContext<AuthContextValue | null>(null);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [session, setSessionState] = useState<Session | null>(() => { const stored = localStorage.getItem("peoplepay_session"); return stored ? JSON.parse(stored) as Session : null; });
-  const [loading, setLoading] = useState(Boolean(localStorage.getItem("peoplepay_access_token")));
-  useEffect(() => { if (!localStorage.getItem("peoplepay_access_token")) { setLoading(false); return; } void apiClient.get<Session>("/auth/me").then((current) => { setSessionState(current); localStorage.setItem("peoplepay_session", JSON.stringify(current)); }).catch(() => { localStorage.removeItem("peoplepay_access_token"); localStorage.removeItem("peoplepay_session"); }).finally(() => setLoading(false)); }, []);
-  const setSession = (next: Session) => { setSessionState(next); localStorage.setItem("peoplepay_session", JSON.stringify(next)); };
-  const signOut = async () => { try { await apiClient.post("/auth/logout", { all_sessions: false }); } catch { /* offline logout still clears local access */ } localStorage.removeItem("peoplepay_access_token"); localStorage.removeItem("peoplepay_session"); setSessionState(null); };
+  const [session, setSessionState] = useState<Session | null>(() => { const stored = localStorage.getItem("interloop_session"); return stored ? JSON.parse(stored) as Session : null; });
+  const [loading, setLoading] = useState(Boolean(localStorage.getItem("interloop_access_token")));
+  useEffect(() => { if (!localStorage.getItem("interloop_access_token")) { setLoading(false); return; } void apiClient.get<Session>("/auth/me").then((current) => { setSessionState(current); localStorage.setItem("interloop_session", JSON.stringify(current)); }).catch(() => { localStorage.removeItem("interloop_access_token"); localStorage.removeItem("interloop_session"); }).finally(() => setLoading(false)); }, []);
+  const setSession = (next: Session) => { setSessionState(next); localStorage.setItem("interloop_session", JSON.stringify(next)); };
+  const signOut = async () => { try { await apiClient.post("/auth/logout", { all_sessions: false }); } catch { /* offline logout still clears local access */ } localStorage.removeItem("interloop_access_token"); localStorage.removeItem("interloop_session"); setSessionState(null); };
   return <AuthContext.Provider value={{ session, loading, signOut, setSession }}>{children}</AuthContext.Provider>;
 }
 

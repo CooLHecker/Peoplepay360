@@ -5,7 +5,7 @@ interface RequestOptions extends RequestInit {
 }
 
 async function request<T>(path: string, options: RequestOptions = {}): Promise<T> {
-  const accessToken = localStorage.getItem("peoplepay_access_token");
+  const accessToken = localStorage.getItem("interloop_access_token");
   const res = await fetch(`${API_BASE_URL}${path}`, {
     headers: {
       "Content-Type": "application/json",
@@ -58,7 +58,7 @@ export const apiClient = {
 // Fetches the file as a blob with the same auth header as apiClient,
 // then triggers a normal browser download without navigating away.
 export async function downloadFile(path: string, filename: string): Promise<void> {
-  const accessToken = localStorage.getItem("peoplepay_access_token");
+  const accessToken = localStorage.getItem("interloop_access_token");
   const res = await fetch(`${API_BASE_URL}${path}`, {
     headers: accessToken ? { Authorization: `Bearer ${accessToken}` } : {}
   });

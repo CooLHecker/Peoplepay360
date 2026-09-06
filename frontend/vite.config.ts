@@ -8,10 +8,10 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: "autoUpdate",
-      includeAssets: ["favicon.svg"],
+      includeAssets: ["favicon.png"],
       manifest: {
-        name: "PeoplePay Offline",
-        short_name: "PeoplePay",
+        name: "Interloop Offline",
+        short_name: "Interloop",
         description: "Offline-first HR & Payroll PWA",
         theme_color: "#0f172a",
         background_color: "#ffffff",

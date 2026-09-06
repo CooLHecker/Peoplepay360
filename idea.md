@@ -1,8 +1,8 @@
-# PeoplePay Offline — Idea.md
+# Interloop Offline — Idea.md
 
 ## 1. Project Title
 
-**PeoplePay Offline**  
+**Interloop Offline**  
 ### An Offline-First HR & Payroll Progressive Web App
 
 ---
@@ -27,7 +27,7 @@ The project aims to combine these workflows into one system while making essenti
 
 ## 4. Proposed Solution
 
-PeoplePay Offline uses a **local-first PWA architecture**.
+Interloop Offline uses a **local-first PWA architecture**.
 
 The application is installed like a normal app but runs through the browser. Core application resources and permitted operational data are stored locally using IndexedDB.
 
@@ -502,7 +502,7 @@ Most HR systems assume:
 
 **Internet → Server → Application**
 
-PeoplePay Offline uses:
+Interloop Offline uses:
 
 **User → Local Application → Local Database → Synchronization → Central Database**
 
@@ -625,7 +625,7 @@ Dashboard updates
 
 > **"Payroll should not stop just because the internet does."**
 
-PeoplePay Offline is designed around this principle.
+Interloop Offline is designed around this principle.
 
 Instead of treating offline support as a fallback page, the system treats **offline capability as part of the core architecture**.
 
@@ -672,7 +672,7 @@ The project should demonstrate:
 
 # 20. Final Concept
 
-**PeoplePay Offline** is an offline-first HR and payroll Progressive Web App designed for organizations that cannot depend on continuous internet connectivity.
+**Interloop Offline** is an offline-first HR and payroll Progressive Web App designed for organizations that cannot depend on continuous internet connectivity.
 
 It connects:
 

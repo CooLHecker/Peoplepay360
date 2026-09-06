@@ -1,11 +1,11 @@
-# PeoplePay Offline
+# Interloop Offline
 
 Offline-first HR & Payroll Progressive Web App.
 
 Monorepo layout — two independent deployables in one repo:
 
 ```
-peoplepay-offline/
+interloop-offline/
 ├── frontend/   React + TypeScript + Vite + Tailwind + PWA (Vercel: framework preset "Vite")
 └── backend/    FastAPI + SQLAlchemy + SQLite locally / MySQL in prod (Vercel: Python serverless via api/index.py)
 ```
@@ -17,8 +17,8 @@ this repo with a different **Root Directory** setting:
 
 | Vercel Project      | Root Directory | Framework Preset |
 |----------------------|-----------------|-------------------|
-| peoplepay-frontend   | `frontend`      | Vite              |
-| peoplepay-backend    | `backend`       | Other (uses `backend/vercel.json`) |
+| interloop-frontend   | `frontend`      | Vite              |
+| interloop-backend    | `backend`       | Other (uses `backend/vercel.json`) |
 
 Steps:
 1. Push this repo to GitHub.

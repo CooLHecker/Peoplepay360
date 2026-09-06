@@ -3,6 +3,7 @@ import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { ROLE_LABELS, canManageUsers, canViewReports, isAdmin, useAuth } from "@/lib/auth";
 import NotificationsPanel from "@/components/layout/NotificationsPanel";
+import interloopLogo from "@/assets/interloop-logo.png";
 
 // Each item's `visible` check decides who sees it in the sidebar,
 // mirroring the actual backend role gate for that page (see App.tsx /
@@ -46,8 +47,8 @@ export default function AppLayout() {
       <aside className={`fixed inset-y-0 left-0 z-30 flex w-64 flex-col border-r border-[#e6e0e5] bg-white/95 px-5 py-6 shadow-[14px_0_36px_rgba(113,75,103,0.04)] transition-transform lg:translate-x-0 ${mobileOpen ? "translate-x-0" : "-translate-x-full"}`}>
         <div className="mb-10 flex items-center justify-between px-2">
           <NavLink to="/" className="flex items-center gap-3" onClick={() => setMobileOpen(false)}>
-            <span className="grid h-10 w-10 place-items-center rounded-xl bg-[#714b67] text-lg font-bold text-white shadow-lg shadow-[#714b67]/20">P</span>
-            <span><strong className="block text-lg leading-none text-[#5c3a54]">PeoplePay</strong><small className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#9c8e99]">people operations</small></span>
+            <img src={interloopLogo} alt="Interloop" className="h-7 w-auto" />
+            <small className="hidden text-[10px] font-semibold uppercase tracking-[0.2em] text-[#9c8e99] sm:block">people operations</small>
           </NavLink>
           <button className="text-[#9c8e99] lg:hidden" onClick={() => setMobileOpen(false)} aria-label="Close menu"><X size={20} /></button>
         </div>

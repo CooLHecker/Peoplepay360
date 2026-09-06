@@ -50,7 +50,7 @@ export default function EmployeeFormPage() {
         const demo = findDemoEmployee(employeeId);
         if (demo) {
           setName(demo.fullName);
-          setEmail(demo.workEmail ?? `${demo.fullName.toLowerCase().replace(" ", ".")}@peoplepay.test`);
+          setEmail(demo.workEmail ?? `${demo.fullName.toLowerCase().replace(" ", ".")}@interloop.test`);
           setPhoneNumber(demo.phoneNumber ?? "");
           setLocation(demo.location ?? "");
           setDepartment(demo.departmentId ?? "");

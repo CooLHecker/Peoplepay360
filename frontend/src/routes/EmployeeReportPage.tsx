@@ -29,7 +29,7 @@ export default function EmployeeReportPage() {
       <PageHeading
         eyebrow="People operations / employee report"
         title="Employee summary"
-        description="A printable HTML report containing the latest employee records available in PeoplePay."
+        description="A printable HTML report containing the latest employee records available in Interloop."
         action={<FileText size={22} className="text-[#714b67]" />}
       />
 

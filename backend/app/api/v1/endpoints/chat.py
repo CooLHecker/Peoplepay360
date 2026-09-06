@@ -41,7 +41,7 @@ router = APIRouter()
 
 _GEMINI_ENDPOINT = "https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
 
-_SYSTEM_PROMPT = """You are "PeoplePay assistant", a helpful HR chatbot embedded in an \
+_SYSTEM_PROMPT = """You are "Interloop assistant", a helpful HR chatbot embedded in an \
 employee's self-service dashboard.
 
 Rules:

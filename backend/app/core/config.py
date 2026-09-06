@@ -4,11 +4,11 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
-    app_name: str = "PeoplePay Offline API"
+    app_name: str = "Interloop Offline API"
     # Local dev default: a SQLite file in the backend/ folder — zero setup,
     # no server/service to run. Override with DATABASE_URL in .env to point
     # at MySQL/Postgres/Aiven etc. instead.
-    database_url: str = "sqlite:///./peoplepay.db"
+    database_url: str = "sqlite:///./interloop.db"
     jwt_secret_key: str = "change-me"
     jwt_algorithm: str = "HS256"
     access_token_expire_minutes: int = 60

@@ -1,6 +1,6 @@
-# PeoplePay Offline — Backend
+# Interloop Offline — Backend
 
-FastAPI backend for PeoplePay Offline.
+FastAPI backend for Interloop Offline.
 
 ## Local development
 
@@ -12,11 +12,11 @@ python -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
 cp .env.example .env
-# .env already defaults DATABASE_URL to sqlite:///./peoplepay.db —
+# .env already defaults DATABASE_URL to sqlite:///./interloop.db —
 # no edits needed unless you want to set BOOTSTRAP_ADMIN_EMAIL/PASSWORD
 # or a real JWT_SECRET_KEY.
 
-# apply database migrations (creates backend/peoplepay.db)
+# apply database migrations (creates backend/interloop.db)
 alembic upgrade head
 
 # seed the fixed role set + (optionally) a bootstrap admin account
@@ -28,7 +28,7 @@ uvicorn app.main:app --reload
 ```
 
 API docs available at `/docs` once running. The SQLite file
-(`backend/peoplepay.db`) is created automatically the first time you
+(`backend/interloop.db`) is created automatically the first time you
 run `alembic upgrade head` — delete it any time to reset the database.
 
 ## Using MySQL / Aiven instead of SQLite (optional)

@@ -137,7 +137,7 @@ def _render_payslip_pdf(payslip: Payslip) -> bytes:
     y = height - 25 * mm
 
     c.setFont("Helvetica-Bold", 18)
-    c.drawString(left, y, "PeoplePay")
+    c.drawString(left, y, "Interloop")
     y -= 8 * mm
     c.setFont("Helvetica", 11)
     c.drawString(left, y, "Payslip")
