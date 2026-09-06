@@ -7,6 +7,19 @@ import { demoEmployees } from "@/features/employees/data";
 import { findDemoContract } from "@/features/contracts/data";
 import type { Contract, Employee } from "@/types";
 
+// Roles with a standard, non-negotiable pay band — picking one of
+// these auto-fills (and locks) the wage and salary structure so they
+// can't drift from the agreed rate. Anything else is a custom role
+// with a manually entered wage.
+const FIXED_ROLE_SALARIES: Record<string, { salaryStructureId: string; wage: number }> = {
+  "Product Designer": { salaryStructureId: "SS-IN-MONTHLY", wage: 95000 },
+  "Senior Engineer": { salaryStructureId: "SS-IN-MONTHLY", wage: 145000 },
+  "People Partner": { salaryStructureId: "SS-IN-MONTHLY", wage: 110000 },
+  "Finance Lead": { salaryStructureId: "SS-IN-MONTHLY", wage: 130000 },
+  "Content Strategist": { salaryStructureId: "SS-IN-MONTHLY", wage: 85000 }
+};
+const OTHER_ROLE = "__other__";
+
 export default function ContractFormPage() {
   const { contractId } = useParams();
   const [searchParams] = useSearchParams();
@@ -18,6 +31,7 @@ export default function ContractFormPage() {
   const [employeeId, setEmployeeId] = useState(presetEmployeeId);
   const [department, setDepartment] = useState("");
   const [jobPosition, setJobPosition] = useState("");
+  const [isCustomRole, setIsCustomRole] = useState(false);
   const [salaryStructureId, setSalaryStructureId] = useState("");
   const [wage, setWage] = useState("");
   const [startDate, setStartDate] = useState("");
@@ -28,6 +42,19 @@ export default function ContractFormPage() {
   const [loadingExisting, setLoadingExisting] = useState(isEditing);
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
+
+  // Selecting a fixed role fills in (and locks) its standard wage and
+  // salary structure. Switching to a custom role clears the lock so
+  // both fields go back to being editable.
+  const applyRole = (role: string) => {
+    setJobPosition(role);
+    const fixed = FIXED_ROLE_SALARIES[role];
+    if (fixed) {
+      setSalaryStructureId(fixed.salaryStructureId);
+      setWage(String(fixed.wage));
+    }
+  };
+  const fixedRoleSalary = !isCustomRole ? FIXED_ROLE_SALARIES[jobPosition] : undefined;
 
   useEffect(() => { void getApiOr<Employee[]>("/employees/", demoEmployees).then(setEmployees); }, []);
 
@@ -41,6 +68,7 @@ export default function ContractFormPage() {
         setEmployeeId(existing.employeeId);
         setDepartment(existing.department ?? "");
         setJobPosition(existing.jobPosition ?? "");
+        setIsCustomRole(Boolean(existing.jobPosition) && !FIXED_ROLE_SALARIES[existing.jobPosition ?? ""]);
         setSalaryStructureId(existing.salaryStructureId ?? "");
         setWage(String(existing.wage));
         setStartDate(existing.startDate);
@@ -55,6 +83,7 @@ export default function ContractFormPage() {
           setEmployeeId(demo.employeeId);
           setDepartment(demo.department ?? "");
           setJobPosition(demo.jobPosition ?? "");
+          setIsCustomRole(Boolean(demo.jobPosition) && !FIXED_ROLE_SALARIES[demo.jobPosition ?? ""]);
           setSalaryStructureId(demo.salaryStructureId ?? "");
           setWage(String(demo.wage));
           setStartDate(demo.startDate);
@@ -110,10 +139,17 @@ export default function ContractFormPage() {
             {employees.map((employee) => <option key={employee.id} value={employee.id}>{employee.fullName}</option>)}
           </select>
         </label>
-        <label className="text-sm font-bold text-[#352f37]">Wage (monthly) *<input value={wage} onChange={(event) => setWage(event.target.value)} type="number" min="1" step="0.01" placeholder="65000" className="mt-2 h-11 w-full rounded-lg border border-[#e6e0e5] px-3 text-sm font-normal outline-none focus:border-[#714b67]" /></label>
+        <label className="text-sm font-bold text-[#352f37]">Wage (monthly) *<input value={wage} onChange={(event) => setWage(event.target.value)} type="number" min="1" step="0.01" placeholder="65000" disabled={Boolean(fixedRoleSalary)} className="mt-2 h-11 w-full rounded-lg border border-[#e6e0e5] px-3 text-sm font-normal outline-none focus:border-[#714b67] disabled:bg-[#fbf8fa] disabled:text-[#9c8e99]" />{fixedRoleSalary && <span className="mt-1 block text-xs font-normal text-[#9c8e99]">Fixed salary for this role.</span>}</label>
         <label className="text-sm font-bold text-[#352f37]">Department<input value={department} onChange={(event) => setDepartment(event.target.value)} placeholder="Department" className="mt-2 h-11 w-full rounded-lg border border-[#e6e0e5] px-3 text-sm font-normal outline-none focus:border-[#714b67]" /></label>
-        <label className="text-sm font-bold text-[#352f37]">Job position<input value={jobPosition} onChange={(event) => setJobPosition(event.target.value)} placeholder="Job position" className="mt-2 h-11 w-full rounded-lg border border-[#e6e0e5] px-3 text-sm font-normal outline-none focus:border-[#714b67]" /></label>
-        <label className="text-sm font-bold text-[#352f37]">Salary structure<input value={salaryStructureId} onChange={(event) => setSalaryStructureId(event.target.value)} placeholder="e.g. SS-IN-MONTHLY" className="mt-2 h-11 w-full rounded-lg border border-[#e6e0e5] px-3 text-sm font-normal outline-none focus:border-[#714b67]" /></label>
+        <label className="text-sm font-bold text-[#352f37]">Job position
+          <select value={isCustomRole ? OTHER_ROLE : jobPosition} onChange={(event) => { const value = event.target.value; if (value === OTHER_ROLE) { setIsCustomRole(true); setJobPosition(""); } else { setIsCustomRole(false); applyRole(value); } }} className="mt-2 h-11 w-full rounded-lg border border-[#e6e0e5] bg-white px-3 text-sm font-normal outline-none focus:border-[#714b67]">
+            <option value="">Select a role</option>
+            {Object.keys(FIXED_ROLE_SALARIES).map((role) => <option key={role} value={role}>{role}</option>)}
+            <option value={OTHER_ROLE}>Other (custom role)</option>
+          </select>
+          {isCustomRole && <input value={jobPosition} onChange={(event) => setJobPosition(event.target.value)} placeholder="Job position" className="mt-2 h-11 w-full rounded-lg border border-[#e6e0e5] px-3 text-sm font-normal outline-none focus:border-[#714b67]" />}
+        </label>
+        <label className="text-sm font-bold text-[#352f37]">Salary structure<input value={salaryStructureId} onChange={(event) => setSalaryStructureId(event.target.value)} placeholder="e.g. SS-IN-MONTHLY" disabled={Boolean(fixedRoleSalary)} className="mt-2 h-11 w-full rounded-lg border border-[#e6e0e5] px-3 text-sm font-normal outline-none focus:border-[#714b67] disabled:bg-[#fbf8fa] disabled:text-[#9c8e99]" /></label>
         <label className="text-sm font-bold text-[#352f37]">Start date *<input value={startDate} onChange={(event) => setStartDate(event.target.value)} type="date" className="mt-2 h-11 w-full rounded-lg border border-[#e6e0e5] px-3 text-sm font-normal outline-none focus:border-[#714b67]" /></label>
         <div>
           <label className="flex items-center gap-2 text-sm font-bold text-[#352f37]"><input type="checkbox" checked={openEnded} onChange={(event) => setOpenEnded(event.target.checked)} className="h-4 w-4 accent-[#714b67]" /> Open-ended contract</label>
