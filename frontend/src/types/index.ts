@@ -1,3 +1,24 @@
+// The fixed role set from the login/access-control spec — mirrors
+// RoleName in backend/app/models/role.py.
+export type RoleName = "admin" | "hr_manager" | "hr_payroll_user" | "hr_payroll_admin" | "employee";
+
+// A login (User) account together with its assigned roles — mirrors
+// UserWithRoles in backend/app/schemas/users.py. Powers the User
+// Management / promotion screen.
+export interface UserAccount {
+  id: number;
+  email: string;
+  isActive: boolean;
+  employeeId: number | null;
+  employeeName: string | null;
+  roles: RoleName[];
+}
+
+export interface RoleOption {
+  name: RoleName;
+  description: string | null;
+}
+
 export interface Employee {
   id: string;
   fullName: string;

@@ -1,16 +1,21 @@
-import { BriefcaseBusiness, CalendarDays, ChevronDown, CircleHelp, FileBarChart, LayoutDashboard, LogOut, Menu, Users, WalletCards, X } from "lucide-react";
+import { BriefcaseBusiness, CalendarDays, ChevronDown, CircleHelp, FileBarChart, LayoutDashboard, LogOut, Menu, ShieldCheck, Users, WalletCards, X } from "lucide-react";
 import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { isAdmin, useAuth } from "@/lib/auth";
+import { ROLE_LABELS, canManageUsers, canViewReports, isAdmin, useAuth } from "@/lib/auth";
 import NotificationsPanel from "@/components/layout/NotificationsPanel";
 
+// Each item's `visible` check decides who sees it in the sidebar,
+// mirroring the actual backend role gate for that page (see App.tsx /
+// the corresponding endpoint's `require_roles(...)`) rather than a
+// single blanket admin/employee split.
 const NAV_ITEMS = [
-  { to: "/", label: "Dashboard", icon: LayoutDashboard, admin: true },
-  { to: "/employees", label: "Employees", icon: Users, admin: true },
-  { to: "/attendance", label: "Attendance", icon: CalendarDays, admin: false },
-  { to: "/time-off", label: "Time off", icon: BriefcaseBusiness, admin: false },
-  { to: "/payroll", label: "Payroll", icon: WalletCards, admin: false },
-  { to: "/reports", label: "Reports", icon: FileBarChart, admin: true }
+  { to: "/", label: "Dashboard", icon: LayoutDashboard, visible: isAdmin },
+  { to: "/employees", label: "Employees", icon: Users, visible: isAdmin },
+  { to: "/attendance", label: "Attendance", icon: CalendarDays, visible: () => true },
+  { to: "/time-off", label: "Time off", icon: BriefcaseBusiness, visible: () => true },
+  { to: "/payroll", label: "Payroll", icon: WalletCards, visible: () => true },
+  { to: "/reports", label: "Reports", icon: FileBarChart, visible: canViewReports },
+  { to: "/user-management", label: "User Management", icon: ShieldCheck, visible: canManageUsers }
 ];
 
 export default function AppLayout() {
@@ -26,7 +31,10 @@ export default function AppLayout() {
   // report simply not generating. Filter the nav to match the access
   // that already exists at the route/API level.
   const admin = isAdmin(session?.roles ?? []);
-  const visibleNavItems = NAV_ITEMS.filter((item) => !item.admin || admin);
+  const roles = session?.roles ?? [];
+  const visibleNavItems = NAV_ITEMS.filter((item) => item.visible(roles));
+  const roleLabel = roles.length > 0 ? roles.map((role) => ROLE_LABELS[role] ?? role).join(", ") : "HR administrator";
+  const profileInitial = (session?.user.full_name ?? session?.user.email ?? "A").slice(0, 1).toUpperCase();
 
   const handleLogout = () => {
     setProfileOpen(false);
@@ -60,8 +68,8 @@ export default function AppLayout() {
               aria-expanded={profileOpen}
               className="flex w-full items-center gap-3 rounded-xl bg-[#fbf8fa] p-3 text-left hover:bg-[#f3edf2]"
             >
-              <div className="grid h-9 w-9 place-items-center rounded-full bg-[#d8c4d3] text-sm font-bold text-[#5c3a54]">A</div>
-              <div className="min-w-0"><p className="truncate text-sm font-bold text-[#352f37]">Admin</p><p className="text-xs text-[#9c8e99]">HR administrator</p></div>
+              <div className="grid h-9 w-9 place-items-center rounded-full bg-[#d8c4d3] text-sm font-bold text-[#5c3a54]">{profileInitial}</div>
+              <div className="min-w-0"><p className="truncate text-sm font-bold text-[#352f37]">{session?.user.full_name ?? session?.user.email ?? "Admin"}</p><p className="truncate text-xs text-[#9c8e99]">{roleLabel}</p></div>
               <ChevronDown size={15} className={`ml-auto text-[#9c8e99] transition-transform ${profileOpen ? "rotate-180" : ""}`} />
             </button>
             {profileOpen && (

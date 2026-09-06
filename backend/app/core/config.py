@@ -51,6 +51,16 @@ class Settings(BaseSettings):
     attendance_late_after_hour: int = 9
     attendance_late_after_minute: int = 15
 
+    # --- Employee assistant chatbot (backend/app/api/v1/endpoints/chat.py) ---
+    # Server-side only: the key never reaches the frontend. Without it,
+    # the /chat/ask endpoint returns a 503 telling the admin to set it.
+    # Get a free key at https://aistudio.google.com/apikey
+    gemini_api_key: str | None = None
+    # "gemini-flash-latest" is Google's own floating alias for its
+    # current fast/cheap Flash model, so this stays valid as Google
+    # ships newer Gemini versions without needing a code change.
+    gemini_model: str = "gemini-flash-latest"
+
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
     @property

@@ -16,4 +16,35 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 }
 
 export function useAuth() { const value = useContext(AuthContext); if (!value) throw new Error("useAuth must be used inside AuthProvider"); return value; }
-export function isAdmin(roles: string[]) { return roles.some((role) => ["admin", "hr_manager", "hr_payroll_admin", "hr_payroll_user"].includes(role)); }
+
+// Human-readable labels for the fixed role set — mirrors RoleName in
+// backend/app/models/role.py.
+export const ROLE_LABELS: Record<string, string> = {
+  admin: "Admin",
+  hr_manager: "HR Manager",
+  hr_payroll_user: "HR Payroll User",
+  hr_payroll_admin: "HR Payroll Admin",
+  employee: "Employee"
+};
+export const ALL_ROLE_NAMES = ["admin", "hr_manager", "hr_payroll_user", "hr_payroll_admin", "employee"];
+
+// Creating/editing employee records, contracts, and working schedules is
+// tighter than viewing them — mirrors each endpoint's `_WRITE_ROLES` in
+// backend/app/api/v1/endpoints/{employees,contracts,schedules}.py.
+// hr_payroll_user (payroll processing) can read these but not edit them.
+export const HR_WRITE_ROLES = ["admin", "hr_manager", "hr_payroll_admin"];
+
+export function hasAnyRole(userRoles: string[], allowed: string[]) { return userRoles.some((role) => allowed.includes(role)); }
+
+// Any of the four HR/admin roles — the broad "this person works in HR
+// operations" grouping used for most of the admin-side navigation.
+export function isAdmin(roles: string[]) { return hasAnyRole(roles, ["admin", "hr_manager", "hr_payroll_admin", "hr_payroll_user"]); }
+
+// Only Admin sees org-wide payroll/attendance reports — mirrors the
+// stricter `_REPORT_ROLES` in backend/app/api/v1/endpoints/reports.py
+// (narrower than the general isAdmin() HR grouping above).
+export function canViewReports(roles: string[]) { return hasAnyRole(roles, ["admin"]); }
+
+// Deciding who holds which role is scoped to Admin + HR Manager —
+// mirrors `_ROLE_MANAGERS` in backend/app/api/v1/endpoints/users.py.
+export function canManageUsers(roles: string[]) { return hasAnyRole(roles, ["admin", "hr_manager"]); }

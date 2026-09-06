@@ -2,8 +2,10 @@
 
 Creates the fixed set of roles used by the login/access-control flow,
 and — only if the relevant settings are set in .env — a bootstrap
-Admin account and a demo Employee account, since there is no User
-Management screen yet for an admin to create accounts through.
+Admin account and a demo Employee account. This is only needed to get
+the very first Admin account into an otherwise-empty database; once
+that account exists, use the User Management screen (Admin/HR Manager
+only) to grant or change roles for anyone else instead of editing .env.
 
 Run with:
     python -m app.db.seed
